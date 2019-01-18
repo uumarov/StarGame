@@ -16,6 +16,9 @@ public class MenuScreen extends Base2DScreen {
 
     Vector2 pos;
     Vector2 v;
+    Vector2 touchDownPos;
+
+    boolean keyboardControl = false;
 
     @Override
     public void show() {
@@ -25,6 +28,7 @@ public class MenuScreen extends Base2DScreen {
         img = new Texture("badlogic.jpg");
         pos = new Vector2(0, 0);
         v = new Vector2(1,1);
+        touchDownPos = new Vector2(0,0);
     }
 
     @Override
@@ -36,7 +40,9 @@ public class MenuScreen extends Base2DScreen {
         batch.draw(background, 0, 0);
         batch.draw(img, pos.x, pos.y);
         batch.end();
-        if (Gdx.graphics.getWidth() - 256 > pos.x && Gdx.graphics.getHeight() - 256 > pos.y) {
+        if (!keyboardControl && Math.abs((touchDownPos.x - pos.x)) > 1 && Math.abs((touchDownPos.y - pos.y)) > 1) {
+            v.set(touchDownPos.cpy().sub(pos));
+            v.nor();
             pos.add(v);
         }
     }
@@ -55,7 +61,25 @@ public class MenuScreen extends Base2DScreen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        System.out.println("touchDown norm " + screenX + " " + (Gdx.graphics.getHeight() - screenY));
+        keyboardControl = false;
+        touchDownPos.set(screenX, Gdx.graphics.getHeight() - screenY);
+        System.out.println("touchDown " + touchDownPos.x + " " + touchDownPos.y + " " + v.x + " " + v.y);
         return super.touchDown(screenX, screenY, pointer, button);
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        keyboardControl = true;
+        switch(keycode){
+            case 19:    pos.add(0,10);
+                        break;
+            case 20:    pos.add(0,-10);
+                        break;
+            case 21:    pos.add(-10,0);
+                        break;
+            case 22:    pos.add(10,0);
+                        break;
+        }
+        return super.keyDown(keycode);
     }
 }

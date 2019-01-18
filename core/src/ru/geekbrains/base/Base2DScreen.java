@@ -64,13 +64,13 @@ public class Base2DScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        System.out.println("touchDown screenX = " + screenX + " screenY = " + screenY);
+        //System.out.println("touchDown screenX = " + screenX + " screenY = " + screenY);
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        System.out.println("touchUp screenX = " + screenX + " screenY = " + screenY);
+        //System.out.println("touchUp screenX = " + screenX + " screenY = " + screenY);
         return false;
     }
 
