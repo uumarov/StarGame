@@ -55,7 +55,7 @@ public class MenuScreen extends Base2DScreen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        System.out.println("touchDown " + screenX + " " + (Gdx.graphics.getHeight() - screenY));
+        System.out.println("touchDown normal " + screenX + " " + (Gdx.graphics.getHeight() - screenY));
         return super.touchDown(screenX, screenY, pointer, button);
     }
 }
