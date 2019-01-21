@@ -10,27 +10,21 @@ import ru.geekbrains.base.Base2DScreen;
 
 public class MenuScreen extends Base2DScreen {
 
-    SpriteBatch batch;
+    private static final float V_LEN = 2.5f;
+
     Texture img;
     Texture background;
 
     Vector2 pos;
     Vector2 v;
-    Vector2 touchDownPos;
-    Vector2 buf;
-
-    boolean keyboardControl = false;
 
     @Override
     public void show() {
         super.show();
-        batch = new SpriteBatch();
         background = new Texture("bg.png");
         img = new Texture("badlogic.jpg");
-        pos = new Vector2(0, 0);
-        v = new Vector2(1,1);
-        touchDownPos = new Vector2(0,0);
-        buf = new Vector2(0,0);
+        pos = new Vector2(-0.5f, -0.5f);
+        v = new Vector2(0.002f, 0.002f);
     }
 
     @Override
@@ -39,15 +33,10 @@ public class MenuScreen extends Base2DScreen {
         Gdx.gl.glClearColor(0.5f, 0.2f, 0.3f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        batch.draw(background, 0, 0);
-        batch.draw(img, pos.x, pos.y);
+        batch.draw(background, -0.5f, -0.5f, 1f, 1f);
+        batch.draw(img, pos.x, pos.y, 0.5f, 0.5f);
         batch.end();
-        buf.set(touchDownPos);
-        if (!keyboardControl && Math.abs((touchDownPos.x - pos.x)) > 1 && Math.abs((touchDownPos.y - pos.y)) > 1) {
-            v.set(buf.sub(pos));
-            v.nor();
-            pos.add(v);
-        }
+        pos.add(v);
     }
 
     @Override
@@ -57,32 +46,12 @@ public class MenuScreen extends Base2DScreen {
 
     @Override
     public void dispose() {
-        batch.dispose();
         img.dispose();
         super.dispose();
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        keyboardControl = false;
-        touchDownPos.set(screenX, Gdx.graphics.getHeight() - screenY);
-        System.out.println("touchDown " + touchDownPos.x + " " + touchDownPos.y + " " + v.x + " " + v.y);
-        return super.touchDown(screenX, screenY, pointer, button);
-    }
-
-    @Override
-    public boolean keyDown(int keycode) {
-        keyboardControl = true;
-        switch(keycode){
-            case 19:    pos.add(0,10);
-                        break;
-            case 20:    pos.add(0,-10);
-                        break;
-            case 21:    pos.add(-10,0);
-                        break;
-            case 22:    pos.add(10,0);
-                        break;
-        }
-        return super.keyDown(keycode);
+    public boolean touchDown(Vector2 touch, int pointer) {
+        return super.touchDown(touch, pointer);
     }
 }
