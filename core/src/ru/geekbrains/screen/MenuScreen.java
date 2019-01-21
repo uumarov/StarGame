@@ -17,6 +17,7 @@ public class MenuScreen extends Base2DScreen {
     Vector2 pos;
     Vector2 v;
     Vector2 touchDownPos;
+    Vector2 buf;
 
     boolean keyboardControl = false;
 
@@ -29,6 +30,7 @@ public class MenuScreen extends Base2DScreen {
         pos = new Vector2(0, 0);
         v = new Vector2(1,1);
         touchDownPos = new Vector2(0,0);
+        buf = new Vector2(0,0);
     }
 
     @Override
@@ -40,8 +42,9 @@ public class MenuScreen extends Base2DScreen {
         batch.draw(background, 0, 0);
         batch.draw(img, pos.x, pos.y);
         batch.end();
+        buf.set(touchDownPos);
         if (!keyboardControl && Math.abs((touchDownPos.x - pos.x)) > 1 && Math.abs((touchDownPos.y - pos.y)) > 1) {
-            v.set(touchDownPos.cpy().sub(pos));
+            v.set(buf.sub(pos));
             v.nor();
             pos.add(v);
         }
