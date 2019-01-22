@@ -10,13 +10,19 @@ import ru.geekbrains.base.Base2DScreen;
 
 public class MenuScreen extends Base2DScreen {
 
-    private static final float V_LEN = 2.5f;
+    private static final float V_LEN = 0.01f;
+    private static final float STEP = 0.1f;
+
 
     Texture img;
     Texture background;
 
     Vector2 pos;
     Vector2 v;
+    Vector2 touch;
+    Vector2 buf;
+
+    boolean keyboardControl = false;
 
     @Override
     public void show() {
@@ -24,7 +30,9 @@ public class MenuScreen extends Base2DScreen {
         background = new Texture("bg.png");
         img = new Texture("badlogic.jpg");
         pos = new Vector2(-0.5f, -0.5f);
-        v = new Vector2(0.002f, 0.002f);
+        v = new Vector2(0f, 0f);
+        touch = new Vector2(0f,0f);
+        buf = new Vector2(0f,0f);
     }
 
     @Override
@@ -36,7 +44,12 @@ public class MenuScreen extends Base2DScreen {
         batch.draw(background, -0.5f, -0.5f, 1f, 1f);
         batch.draw(img, pos.x, pos.y, 0.5f, 0.5f);
         batch.end();
-        pos.add(v);
+        buf.set(touch);
+        if (!keyboardControl && buf.sub(pos).len() > V_LEN) {
+            pos.add(v);
+        } else if(!keyboardControl) {
+            pos.set(touch);
+        }
     }
 
     @Override
@@ -52,6 +65,25 @@ public class MenuScreen extends Base2DScreen {
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer) {
+        keyboardControl = false;
+        this.touch.set(touch);
+        v.set(touch.cpy().sub(pos).setLength(V_LEN));
         return super.touchDown(touch, pointer);
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        keyboardControl = true;
+        switch(keycode){
+            case 19:    pos.add(0,STEP);
+                break;
+            case 20:    pos.add(0,-STEP);
+                break;
+            case 21:    pos.add(-STEP,0);
+                break;
+            case 22:    pos.add(STEP,0);
+                break;
+        }
+        return super.keyDown(keycode);
     }
 }
