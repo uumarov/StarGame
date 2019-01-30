@@ -11,19 +11,21 @@ import com.badlogic.gdx.math.Vector2;
 import ru.geekbrains.base.Base2DScreen;
 import ru.geekbrains.math.Rect;
 import ru.geekbrains.sprite.Background;
-import ru.geekbrains.sprite.ExitButton;
-import ru.geekbrains.sprite.PlayButton;
 import ru.geekbrains.sprite.Star;
+import ru.geekbrains.sprite.menu.ButtonExit;
+import ru.geekbrains.sprite.menu.ButtonPlay;
 
 public class MenuScreen extends Base2DScreen {
 
     private Game game;
+
     private TextureAtlas atlas;
     private Texture bg;
     private Background background;
     private Star star[];
-    private PlayButton btPlay;
-    private ExitButton btExit;
+
+    private ButtonExit buttonExit;
+    private ButtonPlay buttonPlay;
 
     public MenuScreen(Game game) {
         this.game = game;
@@ -39,8 +41,8 @@ public class MenuScreen extends Base2DScreen {
         for (int i = 0; i < star.length; i++) {
             star[i] = new Star(atlas);
         }
-        btPlay = new PlayButton(atlas, game);
-        btExit = new ExitButton(atlas);
+        buttonExit = new ButtonExit(atlas);
+        buttonPlay = new ButtonPlay(atlas, game);
     }
 
     @Override
@@ -64,8 +66,8 @@ public class MenuScreen extends Base2DScreen {
         for (int i = 0; i < star.length; i++) {
             star[i].draw(batch);
         }
-        btPlay.draw(batch);
-        btExit.draw(batch);
+        buttonExit.draw(batch);
+        buttonPlay.draw(batch);
         batch.end();
     }
 
@@ -75,8 +77,8 @@ public class MenuScreen extends Base2DScreen {
         for (int i = 0; i < star.length; i++) {
             star[i].resize(worldBounds);
         }
-        btPlay.resize(worldBounds);
-        btExit.resize(worldBounds);
+        buttonExit.resize(worldBounds);
+        buttonPlay.resize(worldBounds);
     }
 
     @Override
@@ -88,15 +90,15 @@ public class MenuScreen extends Base2DScreen {
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer) {
-        btPlay.touchDown(touch, pointer);
-        btExit.touchDown(touch, pointer);
+        buttonExit.touchDown(touch, pointer);
+        buttonPlay.touchDown(touch, pointer);
         return super.touchDown(touch, pointer);
     }
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer) {
-        btPlay.touchUp(touch, pointer);
-        btExit.touchUp(touch, pointer);
+        buttonExit.touchUp(touch, pointer);
+        buttonPlay.touchUp(touch, pointer);
         return super.touchUp(touch, pointer);
     }
 }
