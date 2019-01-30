@@ -1,6 +1,8 @@
 package ru.geekbrains.sprite.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -23,10 +25,15 @@ public class MainShip extends Sprite {
 
     private TextureRegion bulletRegion;
 
-    public MainShip(TextureAtlas atlas, BulletPool bulletPool) {
+    private Sound piu;
+
+
+
+    public MainShip(TextureAtlas atlas, BulletPool bulletPool, Sound piu) {
         super(atlas.findRegion("main_ship"), 1, 2, 2);
         this.bulletRegion = atlas.findRegion("bulletMainShip");
         this.bulletPool = bulletPool;
+        this.piu = piu;
         setHeightProportion(0.15f);
     }
 
@@ -41,6 +48,40 @@ public class MainShip extends Sprite {
     public void update(float delta) {
         super.update(delta);
         pos.mulAdd(v, delta);
+        if (getLeft() < worldBounds.getLeft()) setLeft(worldBounds.getLeft());
+        if (getRight() > worldBounds.getRight()) setRight(worldBounds.getRight());
+    }
+
+    public boolean touchDown(Vector2 touch, int pointer) {
+        if (touch.x < 0) {
+            isPressedLeft = true;
+            moveLeft();
+        }
+        if (touch.x > 0) {
+            isPressedRight = true;
+            moveRight();
+        }
+        return false;
+    }
+
+    public boolean touchUp(Vector2 touch, int pointer) {
+        if (touch.x < 0) {
+            isPressedLeft = false;
+            if(isPressedRight) {
+                moveRight();
+            } else {
+                stop();
+            }
+        }
+        if (touch.x > 0) {
+            isPressedRight = false;
+            if(isPressedLeft) {
+                moveLeft();
+            } else {
+                stop();
+            }
+        }
+        return false;
     }
 
     public boolean keyDown(int keycode) {
@@ -100,6 +141,7 @@ public class MainShip extends Sprite {
 
     private void shoot() {
         Bullet bullet = bulletPool.obtain();
+        piu.play(1.0f);
         bullet.set(this, bulletRegion, pos, new Vector2(0, 0.5f), 0.01f, worldBounds, 1);
     }
 
