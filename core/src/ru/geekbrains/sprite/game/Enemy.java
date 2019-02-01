@@ -4,6 +4,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
+import ru.geekbrains.math.Rect;
 import ru.geekbrains.pool.BulletPool;
 
 public class Enemy extends Ship {
@@ -22,6 +23,14 @@ public class Enemy extends Ship {
     public void update(float delta) {
         super.update(delta);
         this.pos.mulAdd(v, delta);
+        if (getTop() < worldBounds.getBottom()) {
+            destroy();
+        }
+        reloadTimer += delta;
+        if (reloadTimer >= reloadInterval) {
+            reloadTimer = 0f;
+            shoot();
+        }
     }
 
     public void set(
@@ -33,7 +42,8 @@ public class Enemy extends Ship {
             int bulletDamage,
             float reloadInterval,
             float height,
-            int hp
+            int hp,
+            Rect worldBounds
     ) {
         this.regions = regions;
         this.v0.set(v0);
@@ -44,6 +54,7 @@ public class Enemy extends Ship {
         this.reloadInterval = reloadInterval;
         setHeightProportion(height);
         this.hp = hp;
+        this.worldBounds = worldBounds;
         reloadTimer = reloadInterval;
         v.set(v0);
     }
