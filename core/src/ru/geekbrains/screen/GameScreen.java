@@ -19,7 +19,9 @@ import ru.geekbrains.sprite.Background;
 import ru.geekbrains.sprite.Star;
 import ru.geekbrains.sprite.game.Bullet;
 import ru.geekbrains.sprite.game.Enemy;
+import ru.geekbrains.sprite.game.GameOver;
 import ru.geekbrains.sprite.game.MainShip;
+import ru.geekbrains.sprite.game.NewGameButton;
 import ru.geekbrains.utils.EnemyEmitter;
 
 public class GameScreen extends Base2DScreen {
@@ -33,6 +35,9 @@ public class GameScreen extends Base2DScreen {
     private BulletPool bulletPool;
     private ExplosionPool explosionPool;
     private EnemyPool enemyPool;
+
+    private GameOver gameOver;
+    private NewGameButton newGameButton;
 
     private EnemyEmitter enemyEmitter;
 
@@ -56,8 +61,12 @@ public class GameScreen extends Base2DScreen {
         explosionPool = new ExplosionPool(atlas);
         mainShip = new MainShip(atlas, bulletPool, explosionPool);
         enemyPool = new EnemyPool(bulletPool, worldBounds, explosionPool, mainShip);
-
         enemyEmitter = new EnemyEmitter(atlas, enemyPool, worldBounds);
+
+        gameOver = new GameOver(atlas);
+        newGameButton = new NewGameButton(atlas, this);
+
+
     }
 
     @Override
@@ -75,11 +84,15 @@ public class GameScreen extends Base2DScreen {
         }
         if (!mainShip.isDestroyed()) {
             mainShip.update(delta);
+            bulletPool.updateActiveSprites(delta);
+            enemyPool.updateActiveSprites(delta);
+            enemyEmitter.generate(delta);
         }
-        bulletPool.updateActiveSprites(delta);
         explosionPool.updateActiveSprites(delta);
-        enemyPool.updateActiveSprites(delta);
-        enemyEmitter.generate(delta);
+        if (mainShip.isDestroyed()) {
+            gameOver.update(delta);
+            newGameButton.update(delta);
+        }
     }
 
     private void checkCollisions() {
@@ -139,10 +152,16 @@ public class GameScreen extends Base2DScreen {
         }
         if (!mainShip.isDestroyed()) {
             mainShip.draw(batch);
+            bulletPool.drawActiveSprites(batch);
+            enemyPool.drawActiveSprites(batch);
         }
-        bulletPool.drawActiveSprites(batch);
         explosionPool.drawActiveSprites(batch);
-        enemyPool.drawActiveSprites(batch);
+
+        if (mainShip.isDestroyed()) {
+            gameOver.draw(batch);
+            newGameButton.draw(batch);
+        }
+
         batch.end();
     }
 
@@ -154,6 +173,8 @@ public class GameScreen extends Base2DScreen {
             aStar.resize(worldBounds);
         }
         mainShip.resize(worldBounds);
+        gameOver.resize(worldBounds);
+        newGameButton.resize(worldBounds);
     }
 
     @Override
@@ -188,6 +209,8 @@ public class GameScreen extends Base2DScreen {
     public boolean touchDown(Vector2 touch, int pointer) {
         if (!mainShip.isDestroyed()) {
             mainShip.touchDown(touch, pointer);
+        } else if (mainShip.isDestroyed()) {
+            newGameButton.touchDown(touch, pointer);
         }
         return super.touchDown(touch, pointer);
     }
@@ -196,7 +219,17 @@ public class GameScreen extends Base2DScreen {
     public boolean touchUp(Vector2 touch, int pointer) {
         if (!mainShip.isDestroyed()) {
             mainShip.touchUp(touch, pointer);
+        } else if (mainShip.isDestroyed()) {
+            newGameButton.touchUp(touch, pointer);
         }
         return super.touchUp(touch, pointer);
+    }
+
+    public MainShip getMainShip() {
+        return mainShip;
+    }
+
+    public GameOver getGameOver() {
+        return gameOver;
     }
 }

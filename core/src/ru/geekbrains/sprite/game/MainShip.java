@@ -15,6 +15,7 @@ public class MainShip extends Ship {
     private static final int INVALID_POINTER = -1;
 
     private final Vector2 v0 = new Vector2(0.5f, 0);
+    private final int HP = 1;
 
     private boolean isPressedLeft;
     private boolean isPressedRight;
@@ -33,7 +34,7 @@ public class MainShip extends Ship {
         this.bulletV = new Vector2(0, 0.5f);
         this.bulletHeight = 0.01f;
         this.damage = 1;
-        this.hp = 100;
+        refreshHp();
     }
 
     @Override
@@ -148,6 +149,15 @@ public class MainShip extends Ship {
         super.destroy();
         boom();
     }
+
+    public void refreshHp(){
+        stop();
+        this.hp = HP;
+        isPressedLeft = false;
+        isPressedRight = false;
+    }
+
+
 
     private void moveRight() {
         v.set(v0);
