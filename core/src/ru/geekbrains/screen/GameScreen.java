@@ -57,6 +57,9 @@ public class GameScreen extends Base2DScreen {
     private StringBuilder sbHP = new StringBuilder();
     private StringBuilder sbLevel = new StringBuilder();
 
+    private Texture hpLevel;
+    private float hpHeight;
+
     int frags = 0;
 
     @Override
@@ -83,6 +86,7 @@ public class GameScreen extends Base2DScreen {
         startNewGame = new StartNewGame(atlas, this);
         this.font = new Font("font/font.fnt", "font/font.png");
         this.font.setSize(0.02f);
+        hpLevel = new Texture("textures/hp.jpg");
         startNewGame();
     }
 
@@ -198,6 +202,8 @@ public class GameScreen extends Base2DScreen {
         font.draw(batch, sbFrags.append(FRAGS).append(frags), worldBounds.getLeft(), worldBounds.getTop());
         font.draw(batch, sbHP.append(HP).append(mainShip.getHp()), worldBounds.pos.x, worldBounds.getTop(), Align.center);
         font.draw(batch, sbLevel.append(LEVEL).append(enemyEmitter.getLevel()), worldBounds.getRight(), worldBounds.getTop(), Align.right);
+        hpHeight = 0.4f*((float)mainShip.getHp()/100f);
+        batch.draw(hpLevel, worldBounds.getLeft()+0.02f, worldBounds.getBottom()+0.3f, 0.02f,hpHeight);
     }
 
     @Override
@@ -220,6 +226,7 @@ public class GameScreen extends Base2DScreen {
         mainShip.dispose();
         music.dispose();
         font.dispose();
+        hpLevel.dispose();
         super.dispose();
     }
 
